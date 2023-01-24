@@ -2,6 +2,8 @@ const express = require ('express');
 const path = require ('path');
 const morgan = require ('morgan');
 const cookieParser = require ('cookie-parser');
+const session = require ('express-session');
+
 
 const app = express ();
 
@@ -9,10 +11,21 @@ app.set ('port', process.env.PORT || 3000);
 
 app.use (morgan ('dev')); // 개발할때 사용
 // app.use(morgan('combined'))  // 배포할때 사용
-app.use(express.json())
-app.use(express.urlencoded({extended: true}))
 
-app.use (cookieParser ());
+// app.use('요청경로',express.static(__dirname ,'실제경로'))
+
+app.use (cookieParser ('minseop'));
+app.use (session ({
+		resave : false,
+		saveUninitialized : false,
+		secret : "minseop",
+		cookie : {
+			httpOnly : true,
+		},
+	}));
+app.use (express.json ());
+app.use (express.urlencoded ({ extended : true }));
+
 
 // app.use (( req, res, next ) => {
 // 	console.log ('1 요청을 실행하고싶어요');
@@ -26,7 +39,8 @@ app.use (cookieParser ());
 // 	}
 // });
 
-app.get ('/', ( req, res ) => {
+app.get ('/', ( req, res, next ) => {
+	// req.session.id = 'hello'
 	res.sendFile (path.join (__dirname, 'index.html'));
 });
 
