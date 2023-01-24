@@ -4,7 +4,8 @@ const morgan = require ('morgan');
 const cookieParser = require ('cookie-parser');
 const session = require ('express-session');
 
-
+const dotenv = require('dotenv')
+dotenv.config()
 const app = express ();
 
 app.set ('port', process.env.PORT || 3000);
@@ -14,11 +15,11 @@ app.use (morgan ('dev')); // 개발할때 사용
 
 // app.use('요청경로',express.static(__dirname ,'실제경로'))
 
-app.use (cookieParser ('minseop'));
+app.use (cookieParser (process.env.COOKIE_SECRET));
 app.use (session ({
 		resave : false,
 		saveUninitialized : false,
-		secret : "minseop",
+		secret : process.env.COOKIE_SECRET,
 		cookie : {
 			httpOnly : true,
 		},
