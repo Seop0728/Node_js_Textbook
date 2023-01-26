@@ -4,6 +4,7 @@
   "description": "SNS 서비스",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "MinSeop",

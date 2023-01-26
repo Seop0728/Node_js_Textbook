@@ -12,7 +12,7 @@ const pageRouter = require('./routes/page');
 const app = express();
 app.set('port', process.env.PORT || 8001);
 app.set('view engine', 'html');
-nunjucks.configure('view', {
+nunjucks.configure('views', {
 	express : app,
 	watch : true,
 });
@@ -29,10 +29,11 @@ app.use(express.urlencoded({ extended : false })); // from 요청
 app.use(cookieParser(process.env.COOKIE_SECRET)); // cookie 처리
 app.use(session({
 		resave : false,
-		saveUninitialized : process.env.COOKIE_SECRET,
+		saveUninitialized : false,
+		secret : process.env.COOKIE_SECRET,
 		cookie : {
-			httpOnly : true, // javascript 접근불가
-			secure : false,  // 보안에 좋음 , https 전환시 true로 설정
+			httpOnly : true, // javascript 접근불가, 보안에 좋음
+			secure : false,  // https 전환시 true로 설정
 		}
 	})
 );
