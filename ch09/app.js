@@ -38,21 +38,21 @@ app.use(session({
 );
 
 app.use('/', pageRouter);
-app.use((req,res,next) => { // 404 NOT FOUND
-	const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`)
+app.use(( req, res, next ) => { // 404 NOT FOUND
+	const error = new Error(`${ req.method } ${ req.url } 라우터가 없습니다.`);
 	error.status = 404;
-	next(error)
+	next(error);  // error 처리 미들웨어로 간다
 });
 
 //에러처리 미들웨어는 반드시 매개변수가 4개
-app.use((err,req,res,next)=>{
+app.use(( err, req, res, next ) => {
 	res.locals.message = err.message;
-	res.locals.error = process.env.NODE_ENV !== 'production' ? err:{};
-	res.status(err.status || 500)
-	res.render("error") // ./views/error.html
-})
+	res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};
+	res.status(err.status || 500);
+	res.render("error"); // ./views/error.html
+});
 
 app.listen(app.get('port'), () => {
-	console.log(app.get('port'), '번 포트에서 대기중')
-	console.log('http://localhost:8001')
-})
+	console.log(app.get('port'), '번 포트에서 대기중');
+	console.log('http://localhost:8001');
+});
