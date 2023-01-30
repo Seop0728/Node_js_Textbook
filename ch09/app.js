@@ -5,17 +5,30 @@ const path = require('path'); // node 내장모듈
 const session = require('express-session'); // 로그인에 세션을 사용하기 위한
 const nunjucks = require('nunjucks'); // 화면 그리기 위한
 const dotenv = require('dotenv'); // 설명 파일
+const passport = require('passport')
+const authRouter = require('./routes/auth')
+const { sequelize } = require('./models'); // db객체 안에 들어있는 sequelize ( index.js )
 
 dotenv.config(); // process.env
 const pageRouter = require('./routes/page');
-
+const passportConfig = require('./passport')
 const app = express();
+passportConfig();
+
 app.set('port', process.env.PORT || 8001);
 app.set('view engine', 'html');
 nunjucks.configure('views', {
 	express : app,
 	watch : true,
 });
+
+sequelize.sync({ force : false })// force:true 서버 재시작시 제거후 생성(개발중에만)
+	.then(() => {
+		console.log('데이터베이스 연결 성공');
+	}).catch(( err ) => {
+	console.log(err);
+});
+
 
 // 로깅을 개발모드(자세하게 로깅해줌) //combinde : 서비스할때 사용
 app.use(morgan('dev'));
@@ -24,8 +37,11 @@ app.use(morgan('dev'));
 //__dirname = ch09 안에 있는 public
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(express.json()); // json 요청
-app.use(express.urlencoded({ extended : false })); // from 요청
+// json 요청, req,body를 ajax json 요청으로부터
+app.use(express.json());
+
+// from 요청, req.body 폼으로부터
+app.use(express.urlencoded({ extended : false }));
 app.use(cookieParser(process.env.COOKIE_SECRET)); // cookie 처리
 app.use(session({
 		resave : false,
@@ -38,7 +54,13 @@ app.use(session({
 	})
 );
 
+// 반드시 express.session 밑에 passport 해야댐
+app.use(passport.initialize()); // req.user, req.login, req.isAtuhenticate, req.logout
+app.use(passport.session()) // connect.sid 라는 세션 쿠키가 브라우저로 전송
+
 app.use('/', pageRouter);
+app.use('/auth', authRouter)
+
 app.use(( req, res, next ) => { // 404 NOT FOUND
 	const error = new Error(`${ req.method } ${ req.url } 라우터가 없습니다.`);
 	error.status = 404;
