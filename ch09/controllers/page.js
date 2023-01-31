@@ -27,28 +27,24 @@ exports.renderMain = async (req, res, next) => {
   }
 }
 
-// exports.renderHashtag = async (req, res, next) => {
-//   const query = req.query.hashtag;
-//   if (!query) {
-//     return res.redirect('/');
-//   }
-//   try {
-//     const hashtag = await Hashtag.findOne({ where: { title: query } });
-//     let posts = [];
-//     if (hashtag) {
-//       posts = await hashtag.getPosts({ include: [{ model: User }] });
-//     }
-//
-//     return res.render('main', {
-//       title: `${query} | NodeBird`,
-//       twits: posts,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     return next(error);
-//   }
-// };
+exports.renderHashtag = async (req, res, next) => {
+  const query = req.query.hashtag;
+  if (!query) {
+    return res.redirect('/');
+  }
+  try {
+    const hashtag = await Hashtag.findOne({ where: { title: query } });
+    let posts = [];
+    if (hashtag) {
+      posts = await hashtag.getPosts({ include: [{ model: User }] });
+    }
 
-// 라우터 -> 컨트롤러 -> 서비스
-//컨트롤러 = 요청과 응답을 알아먹음
-//서비스 = 요청과 응답을 모름
+    return res.render('main', {
+      title: `${query} | NodeBird`,
+      twits: posts,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(error);
+  }
+};
