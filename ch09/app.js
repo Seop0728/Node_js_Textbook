@@ -6,11 +6,14 @@ const session = require('express-session'); // 로그인에 세션을 사용하�
 const nunjucks = require('nunjucks'); // 화면 그리기 위한
 const dotenv = require('dotenv'); // 설명 파일
 const passport = require('passport')
-const authRouter = require('./routes/auth')
 const { sequelize } = require('./models'); // db객체 안에 들어있는 sequelize ( index.js )
 
 dotenv.config(); // process.env
 const pageRouter = require('./routes/page');
+const authRouter = require('./routes/auth')
+const postRouter = require('./routes/post')
+const userRouter = require('./routes/user')
+
 const passportConfig = require('./passport')
 const app = express();
 passportConfig();
@@ -37,6 +40,8 @@ app.use(morgan('dev'));
 //__dirname = ch09 안에 있는 public
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/img',express.static(path.join(__dirname, 'uploads')));
+
 // json 요청, req,body를 ajax json 요청으로부터
 app.use(express.json());
 
@@ -60,6 +65,9 @@ app.use(passport.session()) // connect.sid 라는 세션 쿠키가 브라우저�
 
 app.use('/', pageRouter);
 app.use('/auth', authRouter)
+app.use('/post', postRouter)
+app.use('/user', userRouter)
+
 
 app.use(( req, res, next ) => { // 404 NOT FOUND
 	const error = new Error(`${ req.method } ${ req.url } 라우터가 없습니다.`);
