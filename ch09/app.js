@@ -5,7 +5,7 @@ const path = require('path'); // node 내장모듈
 const session = require('express-session'); // 로그인에 세션을 사용하기 위한
 const nunjucks = require('nunjucks'); // 화면 그리기 위한
 const dotenv = require('dotenv'); // 설명 파일
-const passport = require('passport')
+const passport = require('passport')  // 여권 발급
 const { sequelize } = require('./models'); // db객체 안에 들어있는 sequelize ( index.js )
 
 dotenv.config(); // process.env
