@@ -7,10 +7,12 @@ describe('follow', () => {
     user: { id: 1 },
     params: { id: 2 },
   };
+
   const res = {
     status: jest.fn(()=> res),
     send: jest.fn(),
   };
+
   const next = jest.fn();
 
   test('사용자를 찾아 팔로잉을 추가하고 success를 응답해야 함', async () => {

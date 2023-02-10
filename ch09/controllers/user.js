@@ -13,6 +13,4 @@ exports.follow = async (req, res, next) => {
     console.error(error);
     next(error);
   }
-
-
 };
